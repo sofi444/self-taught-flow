@@ -1,0 +1,5 @@
+speechmatics-flow
+pyaudio
+python-dotenv
+websockets==13.1
+requests
