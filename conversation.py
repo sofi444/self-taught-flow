@@ -2,6 +2,7 @@ import asyncio
 import io
 import ssl
 import sys
+import signal
 
 import pyaudio
 
@@ -108,16 +109,31 @@ async def audio_playback():
         stream.close()
         p.terminate()
 
+def end_conversation():
+    print(
+        f"""
+
+        OKAY, I'M DONE. BYE!
+        """
+    )
+    sys.exit(0)
+
 async def main():
     '''
     1. Sets up microphone input
     2. Configures AI conversation
     3. Manages concurrent audio playback
     '''
+    # Handle Ctrl+C gracefully
+    signal.signal(signal.SIGINT, lambda s, f: end_conversation())
+    
     tasks = [
         asyncio.create_task(
             client.run(
-                interactions=[Interaction(sys.stdin.buffer)],
+                interactions=[Interaction(
+                    stream=sys.stdin.buffer,
+                    callback=end_conversation,
+                )],
                 audio_settings=AudioSettings(
                     encoding="pcm_s16le",  # default
                     sample_rate=16000,  # default

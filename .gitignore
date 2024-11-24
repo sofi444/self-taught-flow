@@ -164,3 +164,4 @@ cython_debug/
 *venv/
 .gitignore
 .DS_Store
+notes/
